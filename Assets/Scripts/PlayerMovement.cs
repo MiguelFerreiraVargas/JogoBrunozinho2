@@ -2,62 +2,78 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    [Header("Configura��es Gerais")]
+    public int playerID = 1; // 1 ou 2 -> define os controles
+
+    [Header("Laser")]
     public GameObject laserDojogador;
-
     public Transform LocalDoDisparo;
-
-    public float velocidadeDaNave;
-
-    private Vector2 TeclasApertadas;
-
-    public Rigidbody2D body;
-
     public Transform LocalDoDisparoDaEsquerda;
-
     public Transform LocalDODisparoDaDireita;
 
-    public float TempoMaximoDosLasersDuplos;
+    [Header("Movimento")]
+    public float velocidadeDaNave = 5f;
+    private Rigidbody2D body;
 
-    public float TempoAtualDosLasersDuplos;
-
+    [Header("Laser Duplo")]
+    public float TempoMaximoDosLasersDuplos = 5f;
+    private float TempoAtualDosLasersDuplos;
     public bool temLaserDuplo;
 
     void Start()
     {
-        temLaserDuplo = false;
-
-        TempoAtualDosLasersDuplos = TempoMaximoDosLasersDuplos;
         body = GetComponent<Rigidbody2D>();
+        temLaserDuplo = false;
+        TempoAtualDosLasersDuplos = TempoMaximoDosLasersDuplos;
     }
 
     void Update()
     {
+        MovimentarJogador();
         AtirarlazerDoPlayer();
 
-        MovimentarJogador();
-
-        if (temLaserDuplo == true)
+        if (temLaserDuplo)
         {
             TempoAtualDosLasersDuplos -= Time.deltaTime;
-
             if (TempoAtualDosLasersDuplos <= 0)
-            {
                 DesativarLaserDuplo();
-            }
         }
     }
 
-    public void MovimentarJogador()
+    void MovimentarJogador()
     {
-        TeclasApertadas = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
-        body.linearVelocity = TeclasApertadas.normalized * velocidadeDaNave;
+        Vector2 direcao = Vector2.zero;
+
+        if (playerID == 1) // Player 1 usa WASD
+        {
+            if (Input.GetKey(KeyCode.W)) direcao.y = 1;
+            if (Input.GetKey(KeyCode.S)) direcao.y = -1;
+            if (Input.GetKey(KeyCode.A)) direcao.x = -1;
+            if (Input.GetKey(KeyCode.D)) direcao.x = 1;
+        }
+        else if (playerID == 2) // Player 2 usa setas
+        {
+            if (Input.GetKey(KeyCode.UpArrow)) direcao.y = 1;
+            if (Input.GetKey(KeyCode.DownArrow)) direcao.y = -1;
+            if (Input.GetKey(KeyCode.LeftArrow)) direcao.x = -1;
+            if (Input.GetKey(KeyCode.RightArrow)) direcao.x = 1;
+        }
+
+        body.linearVelocity = direcao.normalized * velocidadeDaNave;
     }
 
-    public void AtirarlazerDoPlayer()
+    void AtirarlazerDoPlayer()
     {
-        if (Input.GetButtonDown("Fire1"))
+        bool atirou = false;
+
+        if (playerID == 1 && Input.GetKeyDown(KeyCode.Space))
+            atirou = true;
+        else if (playerID == 2 && Input.GetKeyDown(KeyCode.Return))
+            atirou = true;
+
+        if (atirou)
         {
-            if (temLaserDuplo == false)
+            if (!temLaserDuplo)
             {
                 Instantiate(laserDojogador, LocalDoDisparo.position, LocalDoDisparo.rotation);
             }
@@ -69,9 +85,10 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    private void DesativarLaserDuplo()
+    void DesativarLaserDuplo()
     {
         temLaserDuplo = false;
         TempoAtualDosLasersDuplos = TempoMaximoDosLasersDuplos;
     }
 }
+

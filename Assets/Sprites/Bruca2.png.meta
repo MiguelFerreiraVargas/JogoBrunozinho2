@@ -247,7 +247,12 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Bruca2_0: -7038168367842027871
+      Bruca2_1: -5969303313779498185
+      Bruca2_2: 5051834222765923502
+      Bruca2_3: 1644750086294375004
+      Bruca2_4: 2061419458869511964
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      icons-keyboard-16x16-1bit-ansdor_0: 3414070250925127576
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

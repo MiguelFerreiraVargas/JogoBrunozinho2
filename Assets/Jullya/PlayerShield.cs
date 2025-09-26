@@ -1,9 +1,10 @@
 ﻿using System.Collections;
 using UnityEngine;
-using UnityEngine.SceneManagement; // 👈 NECESSÁRIO para monitorar a mudança de cena
+using UnityEngine.SceneManagement;
 
 public class PlayerShield : MonoBehaviour
 {
+    // --- VARIÁVEIS DE CONFIGURAÇÃO ---
     [Header("Configurações do escudo")]
     public float shieldDuration = 5f;
     public float shieldCooldown = 5f;
@@ -19,6 +20,8 @@ public class PlayerShield : MonoBehaviour
     // Padrão Singleton para persistir entre cenas
     public static PlayerShield Instance;
 
+    // --------------------------------------------------------------------------
+
     void Awake()
     {
         // 1. Lógica de Singleton (DontDestroyOnLoad)
@@ -27,7 +30,7 @@ public class PlayerShield : MonoBehaviour
             Instance = this;
             DontDestroyOnLoad(gameObject);
 
-            // ❗ ADIÇÃO: Assina o evento de mudança de cena ❗
+            // Assina o evento de mudança de cena
             SceneManager.sceneLoaded += OnSceneLoaded;
         }
         else if (Instance != this)
@@ -54,19 +57,39 @@ public class PlayerShield : MonoBehaviour
 
     void OnDestroy()
     {
-        // ❗ LIMPEZA: Remove a assinatura para evitar erros ao fechar o jogo ❗
+        // Limpeza de evento
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
-    // Método chamado sempre que uma nova cena é carregada
+    // ❗ LÓGICA DE RECONEXÃO E REPOSICIONAMENTO APÓS MUDANÇA DE CENA ❗
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        // Garante que o visual do escudo se reposicione se estiver ativo.
-        // Isso é crucial se o jogador for movido para uma nova posição de spawn.
-        if (shieldVisual != null)
+        // 1. Tenta encontrar a visualização do escudo na nova cena.
+        // Tente usar GameObject.Find("NomeExatoDoSeuVisual") ou, de forma mais segura:
+        GameObject foundVisual = GameObject.Find("ShieldVisualObjectName");
+
+        if (foundVisual == null)
         {
-            shieldVisual.transform.position = transform.position;
+            // Se não encontrar pelo nome, tenta encontrar pelo Tag (se for um objeto único na cena)
+            foundVisual = GameObject.FindGameObjectWithTag("ShieldVisualTag");
         }
+
+        if (foundVisual != null)
+        {
+            // O visual foi encontrado na nova cena
+
+            // Anexa e centraliza o objeto visual no jogador persistido
+            foundVisual.transform.SetParent(transform);
+            foundVisual.transform.localPosition = Vector3.zero;
+
+            // Atualiza a referência
+            shieldVisual = foundVisual;
+
+            // Garante que o estado visual esteja correto
+            shieldVisual.SetActive(isShielded);
+        }
+        // Se o visual não existe na nova cena e nem foi persistido (o cenário mais comum),
+        // ele continuará sendo null, e é esperado que o script de spawn do jogador o crie.
     }
 
     void Start()
@@ -82,8 +105,7 @@ public class PlayerShield : MonoBehaviour
             shieldRoutine = StartCoroutine(ActivateShield());
         }
 
-        // Faz o escudo seguir o jogador
-        // ESTA PARTE AGORA DEVE FUNCIONAR DEVIDO AO OnSceneLoaded
+        // ❗ ESSA LINHA É AGORA APENAS UM FALLBACK. O ESUDO DEVE SER FILHO PARA FUNCIONAR BEM.
         if (shieldVisual != null && isShielded)
         {
             shieldVisual.transform.position = transform.position;
@@ -112,12 +134,11 @@ public class PlayerShield : MonoBehaviour
         return isShielded;
     }
 
-    // Lógica de bloqueio de dano
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (!isShielded) return;
 
-        // Se for um projétil inimigo 
+        // Bloqueia projéteis
         if (other.CompareTag(enemyProjectileTag))
         {
             Debug.Log($"Escudo bloqueou: {other.gameObject.name}");

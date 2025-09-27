@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    [Header("Config Gerais")]
-    public int playerID = 1;
+    [Header("Configura��es Gerais")]
+    public int playerID = 1; // 1 ou 2 -> define os controles
 
     [Header("Laser")]
     public GameObject laserDojogador;
@@ -11,7 +11,7 @@ public class PlayerMovement : MonoBehaviour
     public Transform LocalDoDisparoDaEsquerda;
     public Transform LocalDODisparoDaDireita;
 
-    [Header("Moviment")]
+    [Header("Movimento")]
     public float velocidadeDaNave = 5f;
     private Rigidbody2D body;
 
@@ -44,14 +44,14 @@ public class PlayerMovement : MonoBehaviour
     {
         Vector2 direcao = Vector2.zero;
 
-        if (playerID == 1) 
+        if (playerID == 1) // Player 1 usa WASD
         {
             if (Input.GetKey(KeyCode.W)) direcao.y = 1;
             if (Input.GetKey(KeyCode.S)) direcao.y = -1;
             if (Input.GetKey(KeyCode.A)) direcao.x = -1;
             if (Input.GetKey(KeyCode.D)) direcao.x = 1;
         }
-        else if (playerID == 2) 
+        else if (playerID == 2) // Player 2 usa setas
         {
             if (Input.GetKey(KeyCode.UpArrow)) direcao.y = 1;
             if (Input.GetKey(KeyCode.DownArrow)) direcao.y = -1;

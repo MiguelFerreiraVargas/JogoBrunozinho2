@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      EscudoPlayer2_0: 247011946749470000
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

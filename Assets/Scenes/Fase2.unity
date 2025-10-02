@@ -2208,7 +2208,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a678210d2348a3a4294d36e13b820077, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerID: 2
+  playerID: 1
   laserDojogador: {fileID: 4678493272708815676, guid: b14e252c3c2bff842821a1627f3ea20e, type: 3}
   LocalDoDisparo: {fileID: 534315945}
   LocalDoDisparoDaEsquerda: {fileID: 578745351}

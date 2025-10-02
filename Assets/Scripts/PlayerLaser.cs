@@ -1,5 +1,4 @@
-using UnityEditor.ShaderGraph.Internal;
-//Importa funcionalidades internas do Shader Graph
+
 using UnityEngine;
 
 public class PlayerLaser : MonoBehaviour
